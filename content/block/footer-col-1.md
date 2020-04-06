@@ -1,3 +1,5 @@
-#### Footer col 1
+#### Tranås
 
-Med brödtext i ett stycke som säger något trevligt om just detta block, eller kanske en lista av länkar.
+[Tranås kommun](http://tranas.se) är en kommun i Jönköpings län. Tranås är kommunens centralort vilket gör kommunen till en av de 124 som har en tidigare stad som centralort. Kommunen gränsar i söder till Aneby kommun och i sydväst till Jönköpings kommun i Jönköpings län
+
+[Wikipedia](https://sv.wikipedia.org/wiki/Tran%C3%A5s_kommun)
