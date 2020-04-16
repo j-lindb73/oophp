@@ -17,7 +17,7 @@ SESSION
 <?= var_dump($_SESSION); ?>
 POST
 <?= var_dump($_POST); ?>
-Player
-<?= var_dump($playerScore); ?>
+GAME
+<?= var_dump($game); ?>
 </pre>
 <hr>
