@@ -17,7 +17,7 @@ SESSION
 <?= var_dump($_SESSION); ?>
 POST
 <?= var_dump($_POST); ?>
-GAME
-<?= var_dump($game); ?>
+GET
+<?= var_dump($_GET); ?>
 </pre>
 <hr>

@@ -14,4 +14,4 @@ Som sagt, först till 100 vinner!
 
 
 
-[Starta ett nytt spel!](dice100/init)
+[Starta ett nytt spel!](dice/init)
