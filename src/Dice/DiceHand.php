@@ -5,8 +5,10 @@ namespace Lefty\Dice;
 /**
  * A dicehand, consisting of dices.
  */
-class DiceHand
+class DiceHand implements HistogramInterface
 {
+    use HistogramTrait;
+
     /**
     * @var Dice $dices   Array consisting of dices.
     * @var int  $values  Array consisting of last roll of the dices.
@@ -59,7 +61,16 @@ class DiceHand
         // }
     }
 
+   /**
+     * Get dices from last roll.
+     *
+     * @return array with values of the last roll.
+     */
 
+    public function getHistogramSerie()
+    {
+        return $this->values;
+    }
 
     /**
      * Get values of dices from last roll.

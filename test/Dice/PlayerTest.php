@@ -9,16 +9,29 @@ use PHPUnit\Framework\TestCase;
  */
 class PlayerTest extends TestCase
 {
+    private $player;
+
+    /**
+    * Setup the player for testing.
+    */
+    protected function setUp(): void
+    {
+
+        // Create and initiate the game.
+
+        $this->player = new Player("Jane Doe", 1, false);
+    }
+
     /**
      * Construct object and verify that the object has the expected
      * properties. Use no arguments.
      */
     public function testCreateObjectNoArguments()
     {
-        $player = new Player();
-        $this->assertInstanceOf("\Lefty\Dice\Player", $player);
+
+        $this->assertInstanceOf("\Lefty\Dice\Player", $this->player);
         
-        $hand = $player->getPlayerHand();
+        $hand = $this->player->getPlayerHand();
         $this->assertInstanceOf("\Lefty\Dice\DiceHand", $hand);
     }
 
@@ -27,8 +40,8 @@ class PlayerTest extends TestCase
      */
     public function testCreateWithArgumentName()
     {
-        $player = new Player("Jane Doe", 1, false);
-        $res = $player->getName();
+        // $player = new Player("Jane Doe", 1, false);
+        $res = $this->player->getName();
         $exp = "Jane Doe";
 
         $this->assertEquals($exp, $res);
@@ -38,12 +51,12 @@ class PlayerTest extends TestCase
      */
     public function testPlayerHandCreationAndReset()
     {
-        $player = new Player();
+        // $player = new Player();
         
-        $hand1 = $player->getPlayerHand();
+        $hand1 = $this->player->getPlayerHand();
 
-        $player->clearPlayerHand();
-        $hand2 = $player->getPlayerHand();
+        $this->player->clearPlayerHand();
+        $hand2 = $this->player->getPlayerHand();
 
         $this->assertNotSame($hand1, $hand2);
     }
@@ -52,12 +65,12 @@ class PlayerTest extends TestCase
      */
     public function testPlayerHandCreationAndReset2()
     {
-        $player = new Player();
+        // $player = new Player();
         
-        $hand1 = $player->getPlayerHand();
+        $hand1 = $this->player->getPlayerHand();
 
 
-        $hand2 = $player->getPlayerHand();
+        $hand2 = $this->player->getPlayerHand();
 
         $this->assertSame($hand1, $hand2);
     }
@@ -73,16 +86,23 @@ class PlayerTest extends TestCase
         
         $this->assertTrue($res);
 
-        $res = $cpu->makePlay(95, 9, 100)[0];
+        $res = $cpu->makePlay(95, 9, 0)[0];
         $this->assertEquals("save", $res);
 
-        $res = $cpu->makePlay(25, 1, 100)[0];
-        $this->assertEquals("save", $res);
-
-        $res = $cpu->makePlay(0, 10, 100)[0];
-        $this->assertEquals("save", $res);
-
-        $res = $cpu->makePlay(23, 1, 100)[0];
+        $res = $cpu->makePlay(89, 1)[0];
         $this->assertEquals("roll", $res);
+
+        $res = $cpu->makePlay(0, 25, 1)[0];
+        $this->assertEquals("save", $res);
+
+        $res = $cpu->makePlay(0, 0, 10)[0];
+        $this->assertEquals("save", $res);
+
+        $res = $cpu->makePlay(0, 23, 1)[0];
+        $this->assertEquals("roll", $res);
+        $this->assertIsString($res);
+
+        $res = $cpu->makePlay(0, 23, 1);
+        $this->assertIsArray($res);
     }
 }

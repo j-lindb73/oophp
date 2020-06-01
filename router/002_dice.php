@@ -39,6 +39,8 @@ $app->router->get("dice/play", function () use ($app) {
     
     $scoreToWin = $game->scoreToWin();
     $computerChoice = ($isComputer == true) ? $computerChoice = $currentPlayer->makePlay($roundScore, $rollScore, $scoreToWin) : null;
+    $histogram = $game->getHistogram();
+
 
 
     // print_r($computerChoice);
@@ -50,14 +52,15 @@ $app->router->get("dice/play", function () use ($app) {
         "isComputer" => $isComputer,
         "computerChoice" => $computerChoice,
         "badThrow" => $badThrow,
-        "currentPlayer" => $currentPlayer
+        "currentPlayer" => $currentPlayer,
+        "histogram" => $histogram
     ];
 
 
     // $game->getCurrentPlayer()->clearPlayerHand();
     $app->page->add("dice/standing", $data);
     $app->page->add("dice/play", $data);
-    // $app->page->add("dice/debug");
+    $app->page->add("dice/debug");
 
     return $app->page->render([
         "title" => $title,
@@ -108,11 +111,13 @@ $app->router->get("dice/winner", function () use ($app) {
     $playerScore = $game->player->getScore();
     $cpuScore = $game->cpu->getScore();
     $winner = $game->getWinner()->getName();
+    $histogram = $game->getHistogram();
 
     $data = [
         "playerScore" => $playerScore,
         "cpuScore" => $cpuScore,
-        "winner" => $winner
+        "winner" => $winner,
+        "histogram" => $histogram
     ];
 
 

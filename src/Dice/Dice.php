@@ -13,7 +13,7 @@ class Dice
      * @var int $sides    Number of sides of dice
      * @var int $value    Last roll
      */
-    private $sides;
+    protected $sides;
     private $number;
 
 

@@ -6,3 +6,4 @@
 </form>
 
 </div> 
+<div class="dice-histogram"><?= $histogram->printHistogram() ?></div> 

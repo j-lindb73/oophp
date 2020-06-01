@@ -21,6 +21,7 @@ class Game
     private $currentRound;
     private $scoreToWin = 100;
     private $winner;
+    private $histogram;
 
 
     /**
@@ -34,6 +35,9 @@ class Game
         $this->cpu = new Player("Datorn", $dices, true);
         $this->currentPlayer = $this->player;
         $this->currentRound = new DiceRound($this->currentPlayer);
+
+        $this->histogram = new DiceHistogram();
+        $this->histogram->injectData($this->currentPlayer->getPlayerHand());
     }
 
     /**
@@ -95,6 +99,7 @@ class Game
         } else {
             $this->currentRound->setRoundScore($rollScore);
         }
+        $this->histogram->injectData($this->currentPlayer->getPlayerHand());
     }
 
     /**
@@ -165,5 +170,16 @@ class Game
     public function scoreToWin()
     {
         return $this->scoreToWin;
+    }
+
+       /**
+     * Get histogram
+     *
+     * @return Histogram
+     */
+
+    public function getHistogram()
+    {
+        return $this->histogram;
     }
 }

@@ -1,3 +1,4 @@
+
 <div class="dice-play">
 <p>Omgångens poäng:</p>
 <p class="dice-score"> <?= $roundScore ?></p>
@@ -35,10 +36,12 @@
         
 <?php endif ?>
 
-
 <form method="get" action="init">
 
 <input type="submit" value="Börja om">
 </form>
 
 </div> <!-- Stänger dice-buttons --> 
+
+<div class="dice-histogram"><?= $histogram->printHistogram() ?></div> 
+

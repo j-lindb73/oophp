@@ -46,6 +46,12 @@ h1 {
     justify-content: space-evenly;
 }
 
+.dice-histogram {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
 .dice-play {
     display: flex;
     flex-direction: column;

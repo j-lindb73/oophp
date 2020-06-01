@@ -136,20 +136,20 @@ class Player
     *  Round score >=20    : save
     *  Roll score  >=10    : save
     *
+    *  @param int $playerScore Player score
     *  @param int $roundScore  Round score
     *  @param int $rollScore   Roll score
     *  @param int $scoreToWin  Score to win game
     */
-    public function makePlay($roundScore, $rollScore, $scoreToWin)
+    public function makePlay($playerScore = 0, $roundScore = 0, $rollScore = 0, $scoreToWin = 100)
     {
-        if ($this->score + $roundScore + $rollScore >= $scoreToWin) {
+        if ($playerScore + $roundScore >= $scoreToWin) {
             return ["save", "Datorn sparar"];
-        // } elseif (($this->score + $roundScore) >= ($scoreToWin - $scoreToWin/10)) {
-        } elseif (($this->score + $roundScore) >= (100 - 10)) {
+        } elseif (($playerScore + $roundScore) >= ($scoreToWin - 10)) {
             return ["roll", "Datorn kastar"];
         } elseif ($roundScore >= $scoreToWin/4) {
             return ["save", "Datorn sparar"];
-        } elseif ($rollScore >=10) {
+        } elseif ($rollScore >10) {
             return ["save", "Bra kast! Datorn sparar"];
         } else {
             return ["roll", "Datorn kastar"];
