@@ -135,7 +135,7 @@ class DiceController implements AppInjectableInterface
         // $game->getCurrentPlayer()->clearPlayerHand();
         $page->add("dice/standing", $data);
         $page->add("dice/play", $data);
-        $page->add("dice/debug");
+        // $page->add("dice/debug");
     
         return $page->render([
             "title" => $title,
