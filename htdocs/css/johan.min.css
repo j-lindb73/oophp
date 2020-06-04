@@ -103,3 +103,29 @@ h1 {
 .dice-sprite.dice-4 { background-position: -64px 0; }
 .dice-sprite.dice-5 { background-position: -32px 0; }
 .dice-sprite.dice-6 { background-position: 0 0; }
+
+.thumb {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+
+.movie-container {
+    margin: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.movie-menu {
+    /* display: flex; */
+    align-items: center;
+    margin: 1rem;
+    /* justify-content: space-evenly; */
+}
+
+.movie-menu a {
+    border: 2px solid #1F811F;
+    padding: 0.5rem;
+}

@@ -93,5 +93,10 @@ return [
             "url" => "dice-game",
             "title" => "Spela Tärning 100",
         ],
+        [
+            "text" => "Movie",
+            "url" => "movie/showall",
+            "title" => "Filmdatabas",
+        ],
     ],
 ];
