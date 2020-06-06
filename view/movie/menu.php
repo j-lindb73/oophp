@@ -15,11 +15,11 @@ namespace Anax\View;
 <div class="movie-container">
     <div class="movie-menu">
 
-        <a href="">Show all movies</a>
-        <a href="?route=reset">Reset database</a>
-        <a href="search-title">Search title</a>
-        <a href="search-year">Search year</a>
-        <!-- <a href="?route=movie-select">Select</a> | -->
+        <a href="showall">Visa alla filmer</a>
+        <a href="?route=reset">Återställ databas</a>
+        <a href="search-title">Sök titel</a>
+        <a href="search-year">Sök år</a>
+        <a href="select">Välj film</a>
         <!-- <a href="?route=movie-edit">Edit</a> | -->
         <!-- <a href="?route=show-all-sort">Show all sortable</a> | -->
         <!-- <a href="?route=show-all-paginate">Show all paginate</a> | -->

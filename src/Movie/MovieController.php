@@ -27,8 +27,8 @@ class MovieController implements AppInjectableInterface
     /**
      * @var string $db a sample member variable that gets initialised
      */
-    private $db = "not active";
-
+    // private $db = "not active";
+ 
 
 
 
@@ -43,7 +43,7 @@ class MovieController implements AppInjectableInterface
     {
         // Use to initialise member variables.
     //     $this->db = "active";
-        $this->db = $this->app->db;
+    $this->app->db->connect();
 
     //     // Use $this->app to access the framework services.
      }
@@ -74,7 +74,7 @@ class MovieController implements AppInjectableInterface
     /**
     * This is the showall action:
     *
-    * @return string
+    * @return object
     */
     public function showallAction() : object
     {
@@ -82,22 +82,254 @@ class MovieController implements AppInjectableInterface
          * Show all movies.
         */
         // $app->router->get("movie", function () use ($app) {
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+
         $title = "Movie database | oophp";
 
-        $this->db->connect();
+        // $this->app->db->connect();
         $sql = "SELECT * FROM movie;";
-        $res = $this->db->executeFetchAll($sql);
+        $res = $db->executeFetchAll($sql);
 
 
-        $this->app->page->add("movie/menu");
-        $this->app->page->add("movie/index", [
+        $page->add("movie/menu");
+        $page->add("movie/index", [
             "resultset" => $res,
         ]);
 
-        return $this->app->page->render([
+        return $page->render([
             "title" => $title,
         ]);
         // });
     }
-   
+
+
+    /**
+    * This is the searchyear action:
+    *
+    * @return object
+    */
+    public function searchyearAction() : object
+    {
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+    
+        $title = "SELECT * WHERE year";
+        // $view[] = "view/search-year.php";
+        // $view[] = "view/show-all.php";
+        $year1 = $request->getGet("year1");
+        $year2 = $request->getGet("year2");
+        if ($year1 && $year2) {
+            $sql = "SELECT * FROM movie WHERE year >= ? AND year <= ?;";
+            $resultset = $db->executeFetchAll($sql, [$year1, $year2]);
+        } elseif ($year1) {
+            $sql = "SELECT * FROM movie WHERE year >= ?;";
+            $resultset = $db->executeFetchAll($sql, [$year1]);
+        } elseif ($year2) {
+            $sql = "SELECT * FROM movie WHERE year <= ?;";
+            $resultset = $db->executeFetchAll($sql, [$year2]);
+        } else {
+            $sql = "SELECT * FROM movie;";
+            $resultset = $db->executeFetchAll($sql);
+        }
+
+        $page->add("movie/menu");
+        $page->add("movie/searchyear",[
+            "year1" => $year1,
+            "year2" => $year2
+        ]);
+        $page->add("movie/index", [
+            "resultset" => $resultset,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
+
+    }
+
+        /**
+    * This is the searchtitle action:
+    *
+    * @return object
+    */
+    public function searchtitleAction() : object
+    {
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+
+
+        $title = "SELECT * WHERE title";
+        // $view[] = "view/search-title.php";
+        // $view[] = "view/show-all.php";
+        $searchTitle = $request->getGet("searchTitle");
+        if ($searchTitle) {
+            $sql = "SELECT * FROM movie WHERE title LIKE ?;";
+            $resultset = $db->executeFetchAll($sql, [$searchTitle]);
+        } else {
+            // $sql = "SELECT * FROM movie;";
+            // $resultset = $db->executeFetchAll($sql);
+            $resultset = "";
+        }
+
+
+        $page->add("movie/menu");
+        $page->add("movie/searchtitle",[
+            "searchTitle" => $searchTitle
+        ]);
+        $page->add("movie/index", [
+            "resultset" => $resultset,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
+
+    }
+
+    /**
+    * This is the select action:
+    *
+    * @return object
+    */
+    public function selectActionGet() : object
+    {
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+        $response = $this->app->response;
+    
+         $title = "Select a movie";
+        // $view[] = "view/movie-select.php";
+        $sql = "SELECT id, title FROM movie;";
+        $movies = $db->executeFetchAll($sql);
+        // break;
+        $page->add("movie/menu");
+        $page->add("movie/select", [
+            "movies" => $movies,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
+    }
+
+    /**
+    * This is the select action:
+    *
+    * @return object
+    */
+    public function selectActionPost() : object
+    {
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+        $response = $this->app->response;
+    
+        $movieId = $request->getPost("movieId");
+
+        if ($request->getPost("doDelete")) {
+            $sql = "DELETE FROM movie WHERE id = ?;";
+            $db->execute($sql, [$movieId]);
+            // header("Location: ?route=movie-select");
+            return $response->redirect("movie/select");
+            exit;
+        } elseif ($request->getPost("doAdd")) {
+            $sql = "INSERT INTO movie (title, year, image) VALUES (?, ?, ?);";
+            $db->execute($sql, ["A title", 2020, "img/noimage.png"]);
+            $movieId = $db->lastInsertId();
+            // header("Location: ?route=movie-edit&movieId=$movieId");
+            return $response->redirect("movie/edit?movieId=" . $movieId);
+            exit;
+        } elseif ($request->getPost("doEdit") && is_numeric($movieId)) {
+            // header("Location: ?route=movie-edit&movieId=$movieId");
+            return $response->redirect("movie/edit?movieId=" . $movieId);
+            exit;
+        }
+
+        $title = "Select a movie";
+        // $view[] = "view/movie-select.php";
+        $sql = "SELECT id, title FROM movie;";
+        $movies = $db->executeFetchAll($sql);
+        // break;
+
+        $page->add("movie/select", [
+            "movies" => $movies,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
+    }
+
+    /**
+    * This is the edit action:
+    *
+    * @return object
+    */
+    public function editActionGet() : object
+    {
+
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+        $response = $this->app->response;
+    
+        $movieId = $request->getGet("movieId");
+
+
+        $title = "Redigera film";
+
+
+        $sql = "SELECT * FROM movie WHERE id = ?;";
+        $movie = $db->executeFetchAll($sql, [$movieId]);
+
+        // var_dump($movie);
+        $movie = $movie[0];
+
+        $page->add("movie/menu");
+        $page->add("movie/edit", [
+            "movie" => $movie,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
+
+    }
+
+    /**
+    * This is the edit action:
+    *
+    * @return object
+    */
+    public function editActionPost() : object
+    {
+
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+        $response = $this->app->response;
+    
+    
+        $movieId    = $request->getPost("movieId") ?: $request->getGet("movieId");
+        $movieTitle = $request->getPost("movieTitle");
+        $movieYear  = $request->getPost("movieYear");
+        $movieImage = $request->getPost("movieImage");
+
+        if ($request->getPost("doSave")) {
+            $sql = "UPDATE movie SET title = ?, year = ?, image = ? WHERE id = ?;";
+            $db->execute($sql, [$movieTitle, $movieYear, $movieImage, $movieId]);
+
+        }
+        return $response->redirect("movie/edit?movieId=" . $movieId);
+
+    }
 }
