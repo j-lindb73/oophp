@@ -7,18 +7,18 @@ namespace Anax\View;
  */
 
 // Show incoming variables and view helper functions
-//echo showEnvironment(get_defined_vars(), get_defined_functions());
+// echo showEnvironment(get_defined_vars(), get_defined_functions());
 
 ?>
 
 
 <form method="get">
     <fieldset>
-    <legend>Search</legend>
+    <legend>Sök titel</legend>
     <input type="hidden" name="route" value="search-title">
     <p>
         <label>Titel (använd % som wildcard):
-            <input type="search" name="searchTitle" value="<?= $searchTitle ?>"/>
+            <input type="search" name="searchTitle" value="<?= e($searchTitle) ?>"/>
         </label>
     </p>
     <p>

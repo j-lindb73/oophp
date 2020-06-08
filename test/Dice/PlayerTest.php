@@ -95,7 +95,7 @@ class PlayerTest extends TestCase
         $res = $cpu->makePlay(0, 25, 1)[0];
         $this->assertEquals("save", $res);
 
-        $res = $cpu->makePlay(0, 0, 10)[0];
+        $res = $cpu->makePlay(0, 0, 11)[0];
         $this->assertEquals("save", $res);
 
         $res = $cpu->makePlay(0, 23, 1)[0];

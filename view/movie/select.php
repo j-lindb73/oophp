@@ -20,7 +20,7 @@ namespace Anax\View;
         <select name="movieId">
             <option value="">Välj film...</option>
             <?php foreach ($movies as $movie) : ?>
-            <option value="<?= $movie->id ?>"><?= $movie->title ?></option>
+            <option value="<?= $movie->id ?>"><?= e($movie->title) ?></option>
             <?php endforeach; ?>
         </select>
     </label>

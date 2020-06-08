@@ -16,9 +16,8 @@ namespace Anax\View;
     <div class="movie-menu">
 
         <a href="showall">Visa alla filmer</a>
-        <a href="?route=reset">Återställ databas</a>
-        <a href="search-title">Sök titel</a>
-        <a href="search-year">Sök år</a>
+        <a href="searchtitle">Sök titel</a>
+        <a href="searchyear">Sök år</a>
         <a href="select">Välj film</a>
         <!-- <a href="?route=movie-edit">Edit</a> | -->
         <!-- <a href="?route=show-all-sort">Show all sortable</a> | -->

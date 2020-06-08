@@ -84,5 +84,20 @@ return [
             "url" => "dev",
             "title" => "Anax development utilities",
         ],
+        [
+            "text" => "Guess game",
+            "url" => "guess-game",
+            "title" => "Spela gissa mitt nummer",
+        ],
+        [
+            "text" => "Tärning 100",
+            "url" => "dice-game",
+            "title" => "Spela Tärning 100",
+        ],
+        [
+            "text" => "Film",
+            "url" => "movie/showall",
+            "title" => "Filmdatabas",
+        ],
     ],
 ];

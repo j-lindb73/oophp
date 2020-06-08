@@ -16,22 +16,22 @@ namespace Anax\View;
 <form method="post">
     <fieldset>
     <legend>Redigera</legend>
-    <input type="hidden" name="movieId" value="<?= $movie->id ?>"/>
+    <input type="hidden" name="movieId" value="<?= e($movie->id) ?>"/>
 
     <p>
         <label>Titel:<br> 
-        <input type="text" name="movieTitle" value="<?= $movie->title ?>"/>
+        <input type="text" name="movieTitle" value="<?= e($movie->title)?>"/>
         </label>
     </p>
 
     <p>
         <label>År:<br> 
-        <input type="number" name="movieYear" value="<?= $movie->year ?>"/>
+        <input type="number" name="movieYear" value="<?= e($movie->year) ?>"/>
     </p>
 
     <p>
         <label>Bild:<br> 
-        <input type="text" name="movieImage" value="<?= $movie->image ?>"/>
+        <input type="text" name="movieImage" value="<?= e($movie->image) ?>"/>
         </label>
     </p>
 

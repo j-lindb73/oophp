@@ -14,7 +14,8 @@ if (!$resultset) {
     return;
 }
 ?>
-
+    <fieldset>
+    <legend>Alla filmer</legend>
 
 <table>
     <tr class="first">
@@ -32,5 +33,6 @@ if (!$resultset) {
 <?php endforeach; ?>
 </table>
 
+</fieldset>
 <!-- Close movie-container -->
 </div>

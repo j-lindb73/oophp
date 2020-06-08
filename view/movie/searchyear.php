@@ -14,7 +14,7 @@ namespace Anax\View;
 
 <form method="get">
     <fieldset>
-    <legend>Search</legend>
+    <legend>Sök år</legend>
     <input type="hidden" name="route" value="search-year">
     <p>
         <label>Skapad mellan: 

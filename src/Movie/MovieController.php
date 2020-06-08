@@ -41,12 +41,12 @@ class MovieController implements AppInjectableInterface
      */
     public function initialize() : void
     {
-        // Use to initialise member variables.
+    // Use to initialise member variables.
     //     $this->db = "active";
-    $this->app->db->connect();
+        $this->app->db->connect();
 
     //     // Use $this->app to access the framework services.
-     }
+    }
 
 
     /**
@@ -136,7 +136,7 @@ class MovieController implements AppInjectableInterface
         }
 
         $page->add("movie/menu");
-        $page->add("movie/searchyear",[
+        $page->add("movie/searchyear", [
             "year1" => $year1,
             "year2" => $year2
         ]);
@@ -147,7 +147,6 @@ class MovieController implements AppInjectableInterface
         return $page->render([
             "title" => $title,
         ]);
-
     }
 
         /**
@@ -177,7 +176,7 @@ class MovieController implements AppInjectableInterface
 
 
         $page->add("movie/menu");
-        $page->add("movie/searchtitle",[
+        $page->add("movie/searchtitle", [
             "searchTitle" => $searchTitle
         ]);
         $page->add("movie/index", [
@@ -187,7 +186,6 @@ class MovieController implements AppInjectableInterface
         return $page->render([
             "title" => $title,
         ]);
-
     }
 
     /**
@@ -200,8 +198,6 @@ class MovieController implements AppInjectableInterface
 
         $db = $this->app->db;
         $page = $this->app->page;
-        $request = $this->app->request;
-        $response = $this->app->response;
     
          $title = "Select a movie";
         // $view[] = "view/movie-select.php";
@@ -238,18 +234,15 @@ class MovieController implements AppInjectableInterface
             $db->execute($sql, [$movieId]);
             // header("Location: ?route=movie-select");
             return $response->redirect("movie/select");
-            exit;
         } elseif ($request->getPost("doAdd")) {
             $sql = "INSERT INTO movie (title, year, image) VALUES (?, ?, ?);";
             $db->execute($sql, ["A title", 2020, "img/noimage.png"]);
             $movieId = $db->lastInsertId();
             // header("Location: ?route=movie-edit&movieId=$movieId");
             return $response->redirect("movie/edit?movieId=" . $movieId);
-            exit;
         } elseif ($request->getPost("doEdit") && is_numeric($movieId)) {
             // header("Location: ?route=movie-edit&movieId=$movieId");
             return $response->redirect("movie/edit?movieId=" . $movieId);
-            exit;
         }
 
         $title = "Select a movie";
@@ -279,7 +272,7 @@ class MovieController implements AppInjectableInterface
         $db = $this->app->db;
         $page = $this->app->page;
         $request = $this->app->request;
-        $response = $this->app->response;
+
     
         $movieId = $request->getGet("movieId");
 
@@ -301,7 +294,6 @@ class MovieController implements AppInjectableInterface
         return $page->render([
             "title" => $title,
         ]);
-
     }
 
     /**
@@ -314,7 +306,6 @@ class MovieController implements AppInjectableInterface
 
 
         $db = $this->app->db;
-        $page = $this->app->page;
         $request = $this->app->request;
         $response = $this->app->response;
     
@@ -327,9 +318,7 @@ class MovieController implements AppInjectableInterface
         if ($request->getPost("doSave")) {
             $sql = "UPDATE movie SET title = ?, year = ?, image = ? WHERE id = ?;";
             $db->execute($sql, [$movieTitle, $movieYear, $movieImage, $movieId]);
-
         }
         return $response->redirect("movie/edit?movieId=" . $movieId);
-
     }
 }

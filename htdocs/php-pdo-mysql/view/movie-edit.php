@@ -1,22 +1,22 @@
 <form method="post">
     <fieldset>
     <legend>Edit</legend>
-    <input type="hidden" name="movieId" value="<?= $movie->id ?>"/>
+    <input type="hidden" name="movieId" value="<?= e($movie->id) ?>"/>
 
     <p>
         <label>Title:<br> 
-        <input type="text" name="movieTitle" value="<?= $movie->title ?>"/>
+        <input type="text" name="movieTitle" value="<?= htmlentities($movie->title) ?>"/>
         </label>
     </p>
 
     <p>
         <label>Year:<br> 
-        <input type="number" name="movieYear" value="<?= $movie->year ?>"/>
+        <input type="number" name="movieYear" value="<?= e($movie->year) ?>"/>
     </p>
 
     <p>
         <label>Image:<br> 
-        <input type="text" name="movieImage" value="<?= $movie->image ?>"/>
+        <input type="text" name="movieImage" value="<?= e($movie->image) ?>"/>
         </label>
     </p>
 
@@ -29,4 +29,6 @@
         <a href="?">Show all</a>
     </p>
     </fieldset>
+
+   
 </form>

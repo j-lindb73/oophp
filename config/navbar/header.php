@@ -94,7 +94,7 @@ return [
             "title" => "Spela Tärning 100",
         ],
         [
-            "text" => "Movie",
+            "text" => "Film",
             "url" => "movie/showall",
             "title" => "Filmdatabas",
         ],
