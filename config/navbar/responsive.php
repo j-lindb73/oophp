@@ -99,5 +99,10 @@ return [
             "url" => "movie/showall",
             "title" => "Filmdatabas",
         ],
+        [
+            "text" => "Textfilter",
+            "url" => "textfilter",
+            "title" => "Textfilter",
+        ]
     ],
 ];
