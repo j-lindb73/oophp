@@ -103,5 +103,10 @@ return [
             "url" => "textfilter",
             "title" => "Textfilter",
         ],
+        [
+            "text" => "CMS",
+            "url" => "CMS",
+            "title" => "CMS",
+        ],
     ],
 ];

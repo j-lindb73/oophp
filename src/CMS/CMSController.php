@@ -57,7 +57,9 @@ class CMSController implements AppInjectableInterface
     public function indexAction() : string
     {
         // Deal with the action and return a response.
-        return "INDEX!!:)";
+        //return "INDEX!!:)";
+        $response = $this->app->response;
+        return $response->redirect("CMS/showall");
     }
 
     /**
@@ -93,8 +95,8 @@ class CMSController implements AppInjectableInterface
         $res = $db->executeFetchAll($sql);
 
 
-        $page->add("blog/header");
-        $page->add("blog/show-all", [
+        $page->add("cms/header");
+        $page->add("cms/show-all", [
             "resultset" => $res,
         ]);
 
@@ -125,8 +127,8 @@ class CMSController implements AppInjectableInterface
         $res = $db->executeFetchAll($sql);
 
 
-        $page->add("blog/header");
-        $page->add("blog/admin", [
+        $page->add("cms/header");
+        $page->add("cms/admin", [
             "resultset" => $res,
         ]);
 
@@ -150,8 +152,8 @@ class CMSController implements AppInjectableInterface
 
         $title = "Blog database | oophp";
 
-        $page->add("blog/header");
-        $page->add("blog/create");
+        $page->add("cms/header");
+        $page->add("cms/create");
 
         return $page->render([
             "title" => $title,
@@ -185,6 +187,108 @@ class CMSController implements AppInjectableInterface
         return $response->redirect("CMS/showall");
     }
 
+        /**
+    * This is the edit action:
+    *
+    * @return object
+    */
+    public function editActionGet() : object
+    {
+
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+
+    
+        $contentId = $request->getGet("contentId");
+
+
+        $title = "Blog database | oophp";
+
+
+        $sql = "SELECT * FROM content WHERE id = ?;";
+        $content = $db->executeFetch($sql, [$contentId]);
+
+        //var_dump($content);
+    
+
+        $page->add("cms/header");
+        $page->add("cms/edit", [
+            "content" => $content,
+        ]);
+
+
+        return $page->render([
+            "title" => $title,
+        ]);
+    }
+
+    /**
+    * This is the delete GET-action:
+    *
+    * @return object
+    */
+    public function deleteActionGet() : object
+    {
+
+
+        $db = $this->app->db;
+        $page = $this->app->page;
+        $request = $this->app->request;
+
+    
+        $contentId = $request->getGet("contentId");
+
+
+        $title = "CMS database | oophp";
+
+
+        $sql = "SELECT * FROM content WHERE id = ?;";
+        $content = $db->executeFetch($sql, [$contentId]);
+
+        //var_dump($content);
+    
+
+        $page->add("cms/header");
+        $page->add("cms/delete", [
+            "content" => $content,
+        ]);
+
+
+        return $page->render([
+            "title" => $title,
+        ]);
+    }
+
+    /**
+    * This is the delete  POST-action:
+    *
+    * @return object
+    */
+    public function deleteActionPost() : object
+    {
+
+
+        $db = $this->app->db;
+        //$page = $this->app->page;
+        $request = $this->app->request;
+        $response = $this->app->response;
+    
+        $contentId = $request->getPost("contentId");
+
+
+        $title = "CMS database | oophp";
+
+
+        $sql = "DELETE FROM content WHERE id = ?;";
+        $content = $db->execute($sql, [$contentId]);
+    
+        return $response->redirect("CMS/admin");
+        //var_dump($content);
+    
+
+    }
     /**
     * This is the reset action:
     *
@@ -206,8 +310,8 @@ class CMSController implements AppInjectableInterface
         $res = $db->executeFetchAll($sql);
 
 
-        $page->add("blog/header");
-        $page->add("blog/reset", [
+        $page->add("cms/header");
+        $page->add("cms/reset", [
             "resultset" => $res,
         ]);
 
@@ -252,8 +356,8 @@ EOD;
         $res = $db->executeFetchAll($sql, ["page"]);
 
 
-        $page->add("blog/header");
-        $page->add("blog/pages", [
+        $page->add("cms/header");
+        $page->add("cms/pages", [
             "resultset" => $res,
         ]);
 
@@ -295,8 +399,8 @@ EOD;
         $res = $db->executeFetchAll($sql, ["post"]);
 
 
-        $page->add("blog/header");
-        $page->add("blog/blog", [
+        $page->add("cms/header");
+        $page->add("cms/blog", [
             "resultset" => $res,
         ]);
 
@@ -465,7 +569,7 @@ EOD;
     *
     * @return object
     */
-    public function editActionGet() : object
+    public function editoldActionGet() : object
     {
 
 
