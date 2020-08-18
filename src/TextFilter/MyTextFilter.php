@@ -128,4 +128,17 @@ class MyTextFilter
     {
         return nl2br($text); 
     }
+
+    /**
+     * For convenience access to sanitize value for output in view.
+     *
+     * @param string $value to sanitize
+     *
+     * @return string beeing sanitized
+     */
+    public function esc($value)
+    {
+        return htmlentities($value);
+    }
+
 }
