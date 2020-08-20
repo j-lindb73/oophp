@@ -1,4 +1,7 @@
 <?php
+
+namespace Lefty\CMS;
+
 /**
  * Get value from GET variable or return default value.
  *

@@ -5,6 +5,9 @@
     "minimum-stability": "beta",
     "prefer-stable": true,
     "autoload": {
+        "files": [
+            "src\/CMS\/function.php"
+        ],
         "psr-4": {
             "Anax\\": "src/",
             "Lefty\\": "src/"

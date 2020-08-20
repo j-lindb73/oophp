@@ -28,7 +28,7 @@ class CMSController implements AppInjectableInterface
      * @var string $db a sample member variable that gets initialised
      */
     // private $db = "not active";
- 
+    private $content;
 
 
 
@@ -44,6 +44,7 @@ class CMSController implements AppInjectableInterface
     // Use to initialise member variables.
     //     $this->db = "active";
         $this->app->db->connect();
+        $this->content = new Content($this->app->db);
 
     //     // Use $this->app to access the framework services.
     }
@@ -60,6 +61,33 @@ class CMSController implements AppInjectableInterface
         //return "INDEX!!:)";
         $response = $this->app->response;
         return $response->redirect("CMS/showall");
+    }
+
+       /**
+    * This is the admin action:
+    *
+    * @return object
+    */
+    public function adminAction() : object
+    {
+        /**
+         * Administrate content.
+        */
+ 
+        $page = $this->app->page;
+
+        $title = "Blog database | oophp";
+
+        $res = $this->content->getAllContent();
+
+        $page->add("cms/header");
+        $page->add("cms/admin", [
+            "resultset" => $res,
+        ]);
+
+        return $page->render([
+            "title" => $title,
+        ]);
     }
 
     /**
@@ -106,39 +134,8 @@ class CMSController implements AppInjectableInterface
         // });
     }
 
-   /**
-    * This is the admin action:
-    *
-    * @return object
-    */
-    public function adminAction() : object
-    {
-        /**
-         * Administrate content.
-        */
-   
-        $db = $this->app->db;
-        $page = $this->app->page;
-
-        $title = "Blog database | oophp";
-
-        // $this->app->db->connect();
-        $sql = "SELECT * FROM content;";
-        $res = $db->executeFetchAll($sql);
-
-
-        $page->add("cms/header");
-        $page->add("cms/admin", [
-            "resultset" => $res,
-        ]);
-
-        return $page->render([
-            "title" => $title,
-        ]);
-    }
-
     /**
-    * This is the create action:
+    * This is the create GET action:
     *
     * @return object
     */
@@ -161,7 +158,7 @@ class CMSController implements AppInjectableInterface
     }
 
         /**
-    * This is the create action:
+    * This is the create POST action:
     *
     * @return object
     */
@@ -171,57 +168,79 @@ class CMSController implements AppInjectableInterface
          * Create content.
         */
    
-        $db = $this->app->db;
-        //$page = $this->app->page;
-        $request = $this->app->request;
-        $response = $this->app->response;
+        if (hasKeyPost("doCreate")) {
+            $title = getPost("contentTitle");
 
-        $title = "Blog database | oophp";
-        $contentTitle = $request->getPost("contentTitle");
-        $db->connect();
+            $id = $this->content->createContent($title);
 
-        $sql = "INSERT INTO content (title) VALUES (?);";
-        $db->execute($sql, [$contentTitle]);
-        $id = $db->lastInsertId();
-
-        return $response->redirect("CMS/showall");
+            return $this->app->response->redirect("CMS/edit?contentId=$id");
+        }
     }
 
-        /**
-    * This is the edit action:
+    /**
+    * This is the edit GET-action:
     *
     * @return object
     */
     public function editActionGet() : object
     {
 
-
-        $db = $this->app->db;
         $page = $this->app->page;
         $request = $this->app->request;
 
-    
         $contentId = $request->getGet("contentId");
-
 
         $title = "Blog database | oophp";
 
-
-        $sql = "SELECT * FROM content WHERE id = ?;";
-        $content = $db->executeFetch($sql, [$contentId]);
-
+        $content = $this->content->getContent($contentId);
         //var_dump($content);
-    
 
         $page->add("cms/header");
         $page->add("cms/edit", [
             "content" => $content,
         ]);
 
-
         return $page->render([
             "title" => $title,
         ]);
+    }
+
+    /**
+    * This is the edit POST-action:
+    *
+    * @return void
+    */
+    public function editActionPost()
+    {
+        $request = $this->app->request;
+
+        $contentId = $request->getPost("contentId");
+
+        if (!is_numeric($contentId)) {
+            die("Not valid for content id.");
+        }
+
+        if (hasKeyPost("doDelete")) {
+            return $this->app->response->redirect("CMS/delete?contentId=$contentId");
+        } elseif (hasKeyPost("doSave")) {
+            $params = getPost([
+                "contentTitle",
+                "contentPath",
+                "contentSlug",
+                "contentData",
+                "contentType",
+                "contentFilter",
+                "contentPublish",
+                "contentId"
+            ]);
+
+            $this->content->saveContent($params);
+
+            return $this->app->response->redirect("CMS/admin");
+            
+        } else {
+            return $this->app->response->redirect("CMS/edit?id = $contentId");
+        }
     }
 
     /**
@@ -232,29 +251,19 @@ class CMSController implements AppInjectableInterface
     public function deleteActionGet() : object
     {
 
-
-        $db = $this->app->db;
         $page = $this->app->page;
         $request = $this->app->request;
-
     
         $contentId = $request->getGet("contentId");
 
-
         $title = "CMS database | oophp";
 
-
-        $sql = "SELECT * FROM content WHERE id = ?;";
-        $content = $db->executeFetch($sql, [$contentId]);
-
-        //var_dump($content);
-    
+        $content = $this->content->getContent($contentId);
 
         $page->add("cms/header");
         $page->add("cms/delete", [
             "content" => $content,
         ]);
-
 
         return $page->render([
             "title" => $title,
@@ -268,27 +277,16 @@ class CMSController implements AppInjectableInterface
     */
     public function deleteActionPost() : object
     {
-
-
-        $db = $this->app->db;
-        //$page = $this->app->page;
         $request = $this->app->request;
         $response = $this->app->response;
     
         $contentId = $request->getPost("contentId");
+        
+        $this->content->deleteContent($contentId);
 
-
-        $title = "CMS database | oophp";
-
-
-        $sql = "DELETE FROM content WHERE id = ?;";
-        $content = $db->execute($sql, [$contentId]);
-    
         return $response->redirect("CMS/admin");
-        //var_dump($content);
-    
-
     }
+
     /**
     * This is the reset action:
     *
@@ -302,6 +300,7 @@ class CMSController implements AppInjectableInterface
    
         $db = $this->app->db;
         $page = $this->app->page;
+        var_dump($db->options);
 
         $title = "Blog database | oophp";
 
@@ -605,7 +604,7 @@ EOD;
     *
     * @return object
     */
-    public function editActionPost() : object
+    public function editoldActionPost() : object
     {
 
 
