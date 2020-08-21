@@ -80,7 +80,7 @@ function esc($value)
  * 
  * @return str the formatted slug.
  */
-function slugify($str)
+function slugify1($str)
 {
     $str = mb_strtolower(trim($str));
     $str = str_replace(['å','ä'], 'a', $str);

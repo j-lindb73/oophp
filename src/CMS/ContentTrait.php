@@ -62,7 +62,7 @@ trait ContentTrait
      */
     public function filter($content)
     {
-        $filter = new \Hepa19\MyTextFilter\MyTextFilter();
+        $filter = new \Lefty\TextFilter\MyTextFilter();
 
         $filters = $content->filter;
 

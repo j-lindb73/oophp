@@ -39,14 +39,12 @@ class MyTextFilter
         // For each filter, call its function with the $text as parameter.
         foreach ($filter as $key) {
             if (!isset($this->filters[$key])) {
-                throw new Exception("The filter '$filter' is not a valid filter string due to '$key'.");
+                throw new \Exception("The filter '$filter' is not a valid filter string due to '$key'.");
             }
             $text = call_user_func_array([$this, $this->filters[$key]], [$text]);
         }
     
         return $text;
-
-
     }
 
 
@@ -140,5 +138,4 @@ class MyTextFilter
     {
         return htmlentities($value);
     }
-
 }

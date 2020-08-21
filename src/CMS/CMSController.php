@@ -4,6 +4,7 @@ namespace Lefty\CMS;
 
 use Anax\Commons\AppInjectableInterface;
 use Anax\Commons\AppInjectableTrait;
+use Lefty\CMS\DBResetTrait;
 
 // use Anax\Route\Exception\ForbiddenException;
 // use Anax\Route\Exception\NotFoundException;
@@ -21,15 +22,15 @@ use Anax\Commons\AppInjectableTrait;
 class CMSController implements AppInjectableInterface
 {
     use AppInjectableTrait;
-
-
+    use DBResetTrait;
 
     /**
      * @var string $db a sample member variable that gets initialised
      */
     // private $db = "not active";
     private $content;
-
+    private $contentpage;
+    private $contentpost;
 
 
     /**
@@ -45,6 +46,8 @@ class CMSController implements AppInjectableInterface
     //     $this->db = "active";
         $this->app->db->connect();
         $this->content = new Content($this->app->db);
+        $this->contentpage = new ContentPage($this->app->db);
+        $this->contentpost = new ContentPost($this->app->db);
 
     //     // Use $this->app to access the framework services.
     }
@@ -111,21 +114,16 @@ class CMSController implements AppInjectableInterface
         /**
          * Show all content.
         */
-        // $app->router->get("movie", function () use ($app) {
 
-        $db = $this->app->db;
         $page = $this->app->page;
 
-        $title = "Blog database | oophp";
+        $title = "Show all | Content database";
 
-        // $this->app->db->connect();
-        $sql = "SELECT * FROM content;";
-        $res = $db->executeFetchAll($sql);
-
+        $content = $this->content->getAllContent();
 
         $page->add("cms/header");
         $page->add("cms/show-all", [
-            "resultset" => $res,
+            "resultset" => $content,
         ]);
 
         return $page->render([
@@ -147,7 +145,7 @@ class CMSController implements AppInjectableInterface
 
         $page = $this->app->page;
 
-        $title = "Blog database | oophp";
+        $title = "Create | Content database";
 
         $page->add("cms/header");
         $page->add("cms/create");
@@ -190,10 +188,9 @@ class CMSController implements AppInjectableInterface
 
         $contentId = $request->getGet("contentId");
 
-        $title = "Blog database | oophp";
+        $title = "Edit content | Content database";
 
         $content = $this->content->getContent($contentId);
-        //var_dump($content);
 
         $page->add("cms/header");
         $page->add("cms/edit", [
@@ -217,7 +214,7 @@ class CMSController implements AppInjectableInterface
         $contentId = $request->getPost("contentId");
 
         if (!is_numeric($contentId)) {
-            die("Not valid for content id.");
+           die("Not valid for content id.");
         }
 
         if (hasKeyPost("doDelete")) {
@@ -237,7 +234,6 @@ class CMSController implements AppInjectableInterface
             $this->content->saveContent($params);
 
             return $this->app->response->redirect("CMS/admin");
-            
         } else {
             return $this->app->response->redirect("CMS/edit?id = $contentId");
         }
@@ -256,7 +252,7 @@ class CMSController implements AppInjectableInterface
     
         $contentId = $request->getGet("contentId");
 
-        $title = "CMS database | oophp";
+        $title = "Delete content | Content database";
 
         $content = $this->content->getContent($contentId);
 
@@ -288,340 +284,151 @@ class CMSController implements AppInjectableInterface
     }
 
     /**
-    * This is the reset action:
-    *
-    * @return object
-    */
-    public function resetAction() : object
+     *
+     * Reset database
+     *
+     * @return object
+     */
+    public function resetActionGet() : object
     {
-        /**
-         * Reset database.
-        */
-   
-        $db = $this->app->db;
         $page = $this->app->page;
-        var_dump($db->options);
+        $title = "Reset database";
 
-        $title = "Blog database | oophp";
-
-        // $this->app->db->connect();
-        $sql = "SELECT * FROM content;";
-        $res = $db->executeFetchAll($sql);
-
+        $title = "Reset database | Content database";
 
         $page->add("cms/header");
-        $page->add("cms/reset", [
-            "resultset" => $res,
-        ]);
+        $page->add("cms/reset");
 
         return $page->render([
             "title" => $title,
         ]);
     }
 
-    
     /**
-    * This is the pages action:
-    *
-    * @return object
-    */
-    public function pagesAction() : object
+     * This method is handler for the route:
+     * POST mountpoint/reset
+     *
+     * @return object
+     *
+     */
+    public function resetActionPost(): object
     {
-        /**
-         * Show pages.
-        */
-   
-        $db = $this->app->db;
+        // Restore the database to its original settings
+
+        $doReset = getPost("reset");
+
+        if ($doReset) {
+            $filename = "/sql/content/setup.sql";
+            $this->reset($filename);
+            $this->app->response->redirect("CMS/admin");
+        }
+
+    }
+
+    /**
+     * All pages
+     *
+     * @return object
+     */
+    public function pagesActionGet() : object
+    {
+        $title = "Pages in content | Content database";
         $page = $this->app->page;
 
-        $title = "Blog database | oophp";
+        $resultset = $this->contentpage->getAllPages();
 
-        // $this->app->db->connect();
-        //$sql = "SELECT * FROM content;";
-
-        $sql = <<<EOD
-SELECT
-*,
-CASE 
-        WHEN (deleted <= NOW()) THEN "isDeleted"
-        WHEN (published <= NOW()) THEN "isPublished"
-        ELSE "notPublished"
-    END AS status
-FROM content
-WHERE type=?
-;
-EOD;
-
-        $res = $db->executeFetchAll($sql, ["page"]);
-
+        $data = [
+            "resultset" => $resultset
+        ];
 
         $page->add("cms/header");
-        $page->add("cms/pages", [
-            "resultset" => $res,
-        ]);
+        $page->add("cms/pages", $data);
 
         return $page->render([
-            "title" => $title,
+            "title" => $title
         ]);
     }
 
-        /**
-    * This is the blog action:
-    *
-    * @return object
-    */
-    public function blogAction() : object
+    /**
+     * One page
+     *
+     * @return object
+     */
+    public function pageActionGet() : object
     {
-        /**
-         * Show blog.
-        */
-   
-        $db = $this->app->db;
+        $path = getGet("path");
         $page = $this->app->page;
 
-        $title = "Blog database | oophp";
+        $content = $this->contentpage->getOnePage($path);
+  
 
-        // $this->app->db->connect();
-        //$sql = "SELECT * FROM content;";
+        if (!$content) {
+            return $this->app->response->redirect("cms/pageNotFound");
+        }
 
-        $sql = <<<EOD
-        SELECT
-            *,
-            DATE_FORMAT(COALESCE(updated, published), '%Y-%m-%dT%TZ') AS published_iso8601,
-            DATE_FORMAT(COALESCE(updated, published), '%Y-%m-%d') AS published
-        FROM content
-        WHERE type=?
-        ORDER BY published DESC
-        ;
-        EOD;
-
-        $res = $db->executeFetchAll($sql, ["post"]);
-
+        $title = $content->title;
+        $data = [
+            "content" => $content
+        ];
 
         $page->add("cms/header");
-        $page->add("cms/blog", [
-            "resultset" => $res,
-        ]);
+        $page->add("cms/page", $data);
 
         return $page->render([
-            "title" => $title,
-        ]);
-    }
-
-    /**
-    * This is the searchyear action:
-    *
-    * @return object
-    */
-    public function searchyearAction() : object
-    {
-        $db = $this->app->db;
-        $page = $this->app->page;
-        $request = $this->app->request;
-    
-        $title = "SELECT * WHERE year";
-        // $view[] = "view/search-year.php";
-        // $view[] = "view/show-all.php";
-        $year1 = $request->getGet("year1");
-        $year2 = $request->getGet("year2");
-        if ($year1 && $year2) {
-            $sql = "SELECT * FROM movie WHERE year >= ? AND year <= ?;";
-            $resultset = $db->executeFetchAll($sql, [$year1, $year2]);
-        } elseif ($year1) {
-            $sql = "SELECT * FROM movie WHERE year >= ?;";
-            $resultset = $db->executeFetchAll($sql, [$year1]);
-        } elseif ($year2) {
-            $sql = "SELECT * FROM movie WHERE year <= ?;";
-            $resultset = $db->executeFetchAll($sql, [$year2]);
-        } else {
-            $sql = "SELECT * FROM movie;";
-            $resultset = $db->executeFetchAll($sql);
-        }
-
-        $page->add("movie/menu");
-        $page->add("movie/searchyear", [
-            "year1" => $year1,
-            "year2" => $year2
-        ]);
-        $page->add("movie/index", [
-            "resultset" => $resultset,
-        ]);
-
-        return $page->render([
-            "title" => $title,
+            "title" => $title
         ]);
     }
 
         /**
-    * This is the searchtitle action:
-    *
-    * @return object
-    */
-    public function searchtitleAction() : object
+     * All blogposts
+     *
+     * @return object
+     */
+    public function blogActionGet() : object
     {
-        $db = $this->app->db;
+        $title = "All blogposts | Content database";
         $page = $this->app->page;
-        $request = $this->app->request;
+  
+        $resultset = $this->contentpost->getAllPosts();
+        //var_dump($resultset);
+        $data = [
+            "resultset" => $resultset
+        ];
 
-
-        $title = "SELECT * WHERE title";
-        // $view[] = "view/search-title.php";
-        // $view[] = "view/show-all.php";
-        $searchTitle = $request->getGet("searchTitle");
-        if ($searchTitle) {
-            $sql = "SELECT * FROM movie WHERE title LIKE ?;";
-            $resultset = $db->executeFetchAll($sql, [$searchTitle]);
-        } else {
-            // $sql = "SELECT * FROM movie;";
-            // $resultset = $db->executeFetchAll($sql);
-            $resultset = "";
-        }
-
-
-        $page->add("movie/menu");
-        $page->add("movie/searchtitle", [
-            "searchTitle" => $searchTitle
-        ]);
-        $page->add("movie/index", [
-            "resultset" => $resultset,
-        ]);
+        $page->add("cms/header");
+        $page->add("cms/blog", $data);
 
         return $page->render([
-            "title" => $title,
+            "title" => $title
         ]);
     }
 
     /**
-    * This is the select action:
+    * Get Blogpost
     *
     * @return object
     */
-    public function selectActionGet() : object
+    public function blogpostActionGet() : object
     {
-
-        $db = $this->app->db;
-        $page = $this->app->page;
-    
-         $title = "Select a movie";
-        // $view[] = "view/movie-select.php";
-        $sql = "SELECT id, title FROM movie;";
-        $movies = $db->executeFetchAll($sql);
-        // break;
-        $page->add("movie/menu");
-        $page->add("movie/select", [
-            "movies" => $movies,
-        ]);
-
-        return $page->render([
-            "title" => $title,
-        ]);
-    }
-
-    /**
-    * This is the select action:
-    *
-    * @return object
-    */
-    public function selectActionPost() : object
-    {
-
-        $db = $this->app->db;
-        $page = $this->app->page;
-        $request = $this->app->request;
-        $response = $this->app->response;
-    
-        $movieId = $request->getPost("movieId");
-
-        if ($request->getPost("doDelete")) {
-            $sql = "DELETE FROM movie WHERE id = ?;";
-            $db->execute($sql, [$movieId]);
-            // header("Location: ?route=movie-select");
-            return $response->redirect("movie/select");
-        } elseif ($request->getPost("doAdd")) {
-            $sql = "INSERT INTO movie (title, year, image) VALUES (?, ?, ?);";
-            $db->execute($sql, ["A title", 2020, "img/noimage.png"]);
-            $movieId = $db->lastInsertId();
-            // header("Location: ?route=movie-edit&movieId=$movieId");
-            return $response->redirect("movie/edit?movieId=" . $movieId);
-        } elseif ($request->getPost("doEdit") && is_numeric($movieId)) {
-            // header("Location: ?route=movie-edit&movieId=$movieId");
-            return $response->redirect("movie/edit?movieId=" . $movieId);
-        }
-
-        $title = "Select a movie";
-        // $view[] = "view/movie-select.php";
-        $sql = "SELECT id, title FROM movie;";
-        $movies = $db->executeFetchAll($sql);
-        // break;
-
-        $page->add("movie/select", [
-            "movies" => $movies,
-        ]);
-
-        return $page->render([
-            "title" => $title,
-        ]);
-    }
-
-    /**
-    * This is the edit action:
-    *
-    * @return object
-    */
-    public function editoldActionGet() : object
-    {
-
-
-        $db = $this->app->db;
+        $title = "Alla sidor";
         $page = $this->app->page;
         $request = $this->app->request;
 
-    
-        $movieId = $request->getGet("movieId");
+        $slug = $request->getGet("slug");
 
+  
+        $content = $this->contentpost->getOnePost($slug);
+        //var_dump($resultset);
+        $data = [
+            "content" => $content
+        ];
 
-        $title = "Redigera film";
-
-
-        $sql = "SELECT * FROM movie WHERE id = ?;";
-        $movie = $db->executeFetchAll($sql, [$movieId]);
-
-        // var_dump($movie);
-        $movie = $movie[0];
-
-        $page->add("movie/menu");
-        $page->add("movie/edit", [
-            "movie" => $movie,
-        ]);
+        $page->add("cms/header");
+        $page->add("cms/blogpost", $data);
 
         return $page->render([
-            "title" => $title,
+            "title" => $title
         ]);
     }
 
-    /**
-    * This is the edit action:
-    *
-    * @return object
-    */
-    public function editoldActionPost() : object
-    {
-
-
-        $db = $this->app->db;
-        $request = $this->app->request;
-        $response = $this->app->response;
-    
-    
-        $movieId    = $request->getPost("movieId") ?: $request->getGet("movieId");
-        $movieTitle = $request->getPost("movieTitle");
-        $movieYear  = $request->getPost("movieYear");
-        $movieImage = $request->getPost("movieImage");
-
-        if ($request->getPost("doSave")) {
-            $sql = "UPDATE movie SET title = ?, year = ?, image = ? WHERE id = ?;";
-            $db->execute($sql, [$movieTitle, $movieYear, $movieImage, $movieId]);
-        }
-        return $response->redirect("movie/edit?movieId=" . $movieId);
-    }
 }
