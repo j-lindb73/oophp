@@ -11,7 +11,6 @@ if (!$resultset) {
 <article>
 
 <?php foreach ($resultset as $row) : ?>
-
 <section>
     <header>
         <h1><a href="blogpost?slug=<?= e($row->slug) ?>"><?= e($row->title) ?></a></h1>

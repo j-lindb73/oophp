@@ -213,10 +213,6 @@ class CMSController implements AppInjectableInterface
 
         $contentId = $request->getPost("contentId");
 
-        if (!is_numeric($contentId)) {
-           die("Not valid for content id.");
-        }
-
         if (hasKeyPost("doDelete")) {
             return $this->app->response->redirect("CMS/delete?contentId=$contentId");
         } elseif (hasKeyPost("doSave")) {
@@ -322,7 +318,6 @@ class CMSController implements AppInjectableInterface
             $this->reset($filename);
             $this->app->response->redirect("CMS/admin");
         }
-
     }
 
     /**
@@ -430,5 +425,4 @@ class CMSController implements AppInjectableInterface
             "title" => $title
         ]);
     }
-
 }

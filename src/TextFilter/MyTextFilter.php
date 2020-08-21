@@ -3,17 +3,17 @@
 namespace Lefty\TextFilter;
 
 /**
- * Filter and format text content.
- *
- * @SuppressWarnings(PHPMD.UnusedFormalParameter)
- * @SuppressWarnings(PHPMD.UnusedPrivateField)
- */
+* Filter and format text content.
+*
+* @SuppressWarnings(PHPMD.UnusedFormalParameter)
+* @SuppressWarnings(PHPMD.UnusedPrivateField)
+*/
 class MyTextFilter
 {
     /**
-     * @var array $filters Supported filters with method names of 
-     *                     their respective handler.
-     */
+    * @var array $filters Supported filters with method names of
+    *                     their respective handler.
+    */
     private $filters = [
         "bbcode"    => "bbcode2html",
         "link"      => "makeClickable",
@@ -24,13 +24,13 @@ class MyTextFilter
 
 
     /**
-     * Call each filter on the text and return the processed text.
-     *
-     * @param string $text   The text to filter.
-     * @param array  $filter Array of filters to use.
-     *
-     * @return string with the formatted text.
-     */
+    * Call each filter on the text and return the processed text.
+    *
+    * @param string $text   The text to filter.
+    * @param array  $filter Array of filters to use.
+    *
+    * @return string with the formatted text.
+    */
     public function parse($text, $filter)
     {
 
@@ -50,12 +50,12 @@ class MyTextFilter
 
 
     /**
-     * Helper, BBCode formatting converting to HTML.
-     *
-     * @param string $text The text to be converted.
-     *
-     * @return string the formatted text.
-     */
+    * Helper, BBCode formatting converting to HTML.
+    *
+    * @param string $text The text to be converted.
+    *
+    * @return string the formatted text.
+    */
     public function bbcode2html($text)
     {
         $search = [
@@ -82,12 +82,12 @@ class MyTextFilter
 
 
     /**
-     * Make clickable links from URLs in text.
-     *
-     * @param string $text The text that should be formatted.
-     *
-     * @return string with formatted anchors.
-     */
+    * Make clickable links from URLs in text.
+    *
+    * @param string $text The text that should be formatted.
+    *
+    * @return string with formatted anchors.
+    */
     public function makeClickable($text)
     {
         return preg_replace_callback(
@@ -102,12 +102,12 @@ class MyTextFilter
 
 
     /**
-     * Format text according to Markdown syntax.
-     *
-     * @param string $text The text that should be formatted.
-     *
-     * @return string as the formatted html text.
-     */
+    * Format text according to Markdown syntax.
+    *
+    * @param string $text The text that should be formatted.
+    *
+    * @return string as the formatted html text.
+    */
     public function markdown($text)
     {
         return \Michelf\MarkdownExtra::defaultTransform($text);
@@ -116,24 +116,24 @@ class MyTextFilter
 
 
     /**
-     * For convenience access to nl2br formatting of text.
-     *
-     * @param string $text The text that should be formatted.
-     *
-     * @return string the formatted text.
-     */
+    * For convenience access to nl2br formatting of text.
+    *
+    * @param string $text The text that should be formatted.
+    *
+    * @return string the formatted text.
+    */
     public function nl2br($text)
     {
-        return nl2br($text); 
+        return nl2br($text);
     }
 
     /**
-     * For convenience access to sanitize value for output in view.
-     *
-     * @param string $value to sanitize
-     *
-     * @return string beeing sanitized
-     */
+    * For convenience access to sanitize value for output in view.
+    *
+    * @param string $value to sanitize
+    *
+    * @return string beeing sanitized
+    */
     public function esc($value)
     {
         return htmlentities($value);
